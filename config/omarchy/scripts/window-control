@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+"""Minimize to a hidden workspace and restore from the Omarchy taskbar."""
+import json
+import os
+from pathlib import Path
+import re
+import subprocess
+import sys
+
+def query(what):
+    return json.loads(subprocess.check_output(['hyprctl', '-j', what], text=True))
+
+def dispatch(expression):
+    subprocess.run(['hyprctl', 'dispatch', expression], check=True, stdout=subprocess.DEVNULL)
+
+mode = sys.argv[1]
+client = query('activewindow') if mode == 'minimize' else next(
+    (c for c in query('clients') if c['address'] == sys.argv[2]), None)
+if not client:
+    sys.exit(0)
+address = client['address']
+if not re.fullmatch(r'0x[0-9a-fA-F]+', address):
+    sys.exit('Invalid window address')
+selector = json.dumps('address:' + address)
+state_dir = Path(os.environ['XDG_RUNTIME_DIR']) / 'omarchy-minimized'
+state_dir.mkdir(mode=0o700, exist_ok=True)
+state = state_dir / (address + '.json')
+if mode == 'minimize':
+    if client['workspace']['name'] == 'special:minimized':
+        sys.exit(0)
+    state.write_text(json.dumps({'workspace': client['workspace']['name'], 'pid': client['pid']}))
+    dispatch('hl.dsp.window.move({workspace="special:minimized", follow=false, window=' + selector + '})')
+elif mode == 'activate':
+    if client['workspace']['name'] == 'special:minimized':
+        saved = json.loads(state.read_text()) if state.exists() else {}
+        workspace = saved.get('workspace') if saved.get('pid') == client['pid'] else None
+        workspace = workspace or query('activeworkspace')['name']
+        dispatch('hl.dsp.window.move({workspace=' + json.dumps(workspace) + ', follow=true, window=' + selector + '})')
+    dispatch('hl.dsp.focus({window=' + selector + '})')
+    state.unlink(missing_ok=True)
+else:
+    sys.exit('Unknown action')
