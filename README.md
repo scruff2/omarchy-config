@@ -12,6 +12,9 @@ sessions. Intended public repository: `scruff2/omarchy-config` on GitHub.
   working area without outer gaps or rounded corners.
 - A bottom bar with window buttons, workspaces, a centered clock, and system
   controls. Click a window button to activate it or restore a minimized window.
+- Click the weather cloud to see outdoor weather and the Aranet4 indoor
+  temperature. Indoor readings refresh every 15 minutes; failures silently hide
+  the indoor row. No separate temperature label occupies the bar.
 - Minimize moves a window to the hidden `special:minimized` workspace. The helper
   records its original workspace in the user's temporary runtime directory.
 - Super + middle-click closes the focused window.
@@ -67,6 +70,42 @@ Verify title-bar controls, taskbar restoration, keyboard shortcuts, and terminal
 This snapshot has been checked on the source laptop; a fresh laptop installation
 still needs this verification. Other existing personal configuration files are
 left in place, but the files listed by the preview are replaced in full.
+
+## Aranet4 indoor temperature
+
+The user-owned `mark.weather` plugin extends Omarchy's weather popup. Click the
+cloud icon to show the indoor Fahrenheit reading above the outdoor weather.
+Hover over the indoor reading for Celsius, humidity, CO₂, battery percentage,
+and the last reception time. The row disappears silently if a refresh fails or
+the received data becomes stale, and returns after a successful refresh.
+
+The reader listens for Bluetooth LE advertisements for up to 30 seconds every
+15 minutes. It does not connect, pair, request a measurement, or change the
+sensor's own measurement interval. The sensor must have **Smart Home
+integrations** enabled so advertisements include readings. Bluetooth must be
+powered on and the sensor in range. This implementation supports Aranet4.
+
+Dependencies on Arch/Omarchy are `bluez`, `python-dbus`, and `python-gobject`,
+in addition to the existing Quickshell installation. If missing, install with
+`omarchy pkg add bluez python-dbus python-gobject`.
+
+The default address in `config/omarchy/plugins/mark.weather/read-temperature.py`
+identifies the source laptop's Aranet4. For a different sensor, set its `ADDRESS`
+default before installation, or export `ARANET_ADDRESS` in the desktop session's
+environment and restart the shell. Find the address with `bluetoothctl devices`.
+Runtime readings and the shared refresh lock stay under `~/.cache/aranet-bar/`
+and are not included in this repository. Each sensor gets its own cache.
+
+The installer includes the weather plugin automatically and backs it up like
+other configuration files. Restart with `omarchy restart shell` after installation:
+changes to nested popup components may remain cached until the shell restarts.
+This popup was visually verified on the source laptop with a live Aranet4 reading.
+
+The copied weather base (`BarWidget.qml`, `Panel.qml`, and `Model.js`) comes from
+the installed Omarchy 4.0.6-1 shell, with the popup extended to include
+`IndoorTemperature.qml`. Keep the clone reviewed against upstream weather changes
+when updating Omarchy. Advertisement decoding follows the
+[Aranet4-Python implementation](https://github.com/Anrijs/Aranet4-Python).
 
 ## Monitor layout
 
