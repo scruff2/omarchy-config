@@ -3,3 +3,8 @@ __pycache__/
 *.pyc
 *.bak*
 .DS_Store
+# Private fingerprint runtime state and firmware must never be captured.
+calib-data.bin
+fwinstaller.exe
+*.xpfwext
+validity-0097-backup/

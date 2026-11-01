@@ -1,0 +1,9 @@
+# Build products and local data never belong in the config repository.
+/src/
+/pkg/
+/*.pkg.tar.*
+/*.log
+/*.bin
+/*.exe
+/backups/
+/.test-root/

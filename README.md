@@ -115,6 +115,17 @@ Monitor settings are **not installed by default**. Keep the new laptop's working
 scaling on each. Review and adapt output names, scaling, and positions before
 using `./install.py --apply --monitors`.
 
+## Optional fingerprint reader
+
+The source laptop's **Validity 138a:0097** reader works with a local adaptation
+of existing userspace drivers. Source, licenses, an Arch package recipe,
+access-control tests, setup instructions, and rollback steps are saved under
+[hardware/fingerprint](hardware/fingerprint/README.md). Installation is a
+separate administrator action; the desktop installer does not enable it.
+Fingerprint templates, pairing material, calibration, firmware downloads, and
+private system backups are excluded. Enroll and verify fingers locally on each
+laptop before enabling login.
+
 ## Restore
 
 The installer prints a backup path under
@@ -133,7 +144,8 @@ Backups contain your previous local configuration; keep them private.
 This repository preserves layout and configuration preferences. It does not
 bundle the selected stock theme, wallpaper images, installed applications,
 browser profiles, credentials, dictation models, fingerprint enrollment, or
-system services. The source laptop uses the stock Tokyo Night theme. Select it separately with
+installed system state. Optional fingerprint service source is saved separately
+and is not installed by the desktop installer. The source laptop uses the stock Tokyo Night theme. Select it separately with
 `omarchy theme set "Tokyo Night"` (check available names on the target installation).
 Generated theme files stay managed by Omarchy.
 

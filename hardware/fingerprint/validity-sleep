@@ -1,0 +1,6 @@
+#!/bin/bash
+set -euo pipefail
+case "$1" in
+  pre) systemctl stop validity-backend.service ;;
+  post) systemctl start validity-backend.service ;;
+esac

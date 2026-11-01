@@ -1,0 +1,23 @@
+pkgname=validity-0097-local
+pkgver=0.1
+pkgrel=2
+pkgdesc='Local Validity 138a:0097 backend with persistent calibration and restricted D-Bus registration'
+arch=(any)
+license=(MIT GPL-2.0-or-later)
+depends=(fprintd python-pyusb python-cryptography python-yaml python-dbus python-gobject)
+
+package() {
+  local dest="$pkgdir/opt/validity-0097"
+  install -d "$dest"
+  cp -r "$startdir/../../vendor/fingerprint/python-validity/validitysensor" "$dest/"
+  cp -r "$startdir/../../vendor/fingerprint/open-fprintd/openfprintd" "$dest/"
+  find "$dest" -type d -name __pycache__ -exec rm -r {} +
+  install -m755 "$startdir/../../vendor/fingerprint/python-validity/dbus_service/dbus-service" "$dest/validity-service"
+  install -m755 "$startdir/../../vendor/fingerprint/open-fprintd/dbus_service/open-fprintd" "$dest/open-fprintd"
+  install -Dm644 "$startdir/validity-backend.service" "$pkgdir/usr/lib/systemd/system/validity-backend.service"
+  install -Dm755 "$startdir/validity-sleep" "$pkgdir/usr/lib/systemd/system-sleep/validity-0097"
+  install -Dm644 "$startdir/fprintd-override.conf" "$pkgdir/etc/systemd/system/fprintd.service.d/validity.conf"
+  install -Dm644 "$startdir/../../vendor/fingerprint/python-validity/dbus_service/io.github.uunicorn.Fprint.conf" "$pkgdir/usr/share/dbus-1/system.d/io.github.uunicorn.Fprint.conf"
+  install -Dm644 "$startdir/../../vendor/fingerprint/python-validity/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/validity-LICENSE"
+  install -Dm644 "$startdir/../../vendor/fingerprint/open-fprintd/COPYING" "$pkgdir/usr/share/licenses/$pkgname/open-fprintd-LICENSE"
+}
