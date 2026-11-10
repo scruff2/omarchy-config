@@ -18,6 +18,7 @@ sessions. Intended public repository: `scruff2/omarchy-config` on GitHub.
 - Minimize moves a window to the hidden `special:minimized` workspace. The helper
   records its original workspace in the user's temporary runtime directory.
 - Super + middle-click closes the focused window.
+- Natural (inverted) scrolling for the mouse wheel and touchpad.
 - Right Alt toggles Voxtype dictation when Voxtype is installed and configured.
 - Terminal preferences for Alacritty, Ghostty, Foot, and Kitty. These retain
   Omarchy's dynamic theme includes.
