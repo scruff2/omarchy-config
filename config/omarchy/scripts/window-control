@@ -37,6 +37,14 @@ elif mode == 'activate':
         workspace = workspace or query('activeworkspace')['name']
         dispatch('hl.dsp.window.move({workspace=' + json.dumps(workspace) + ', follow=true, window=' + selector + '})')
     dispatch('hl.dsp.focus({window=' + selector + '})')
+    # Query after restoring so the destination workspace determines the mode.
+    restored = next((c for c in query('clients') if c['address'] == address), None)
+    if restored:
+        layout = subprocess.check_output(
+            ['omarchy-hyprland-workspace-layout-current', str(restored['workspace']['id'])],
+            text=True).strip()
+        if layout == 'floating' and restored.get('fullscreen', 0) != 2:
+            dispatch('hl.dsp.window.fullscreen({mode="maximized", action="set", window=' + selector + '})')
     state.unlink(missing_ok=True)
 else:
     sys.exit('Unknown action')
