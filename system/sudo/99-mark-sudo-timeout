@@ -1,0 +1,2 @@
+# Optional sudo policy for Mark; not installed by install.py.
+Defaults:mark timestamp_timeout=60, timestamp_type=global

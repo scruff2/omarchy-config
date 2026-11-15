@@ -127,6 +127,13 @@ Fingerprint templates, pairing material, calibration, firmware downloads, and
 private system backups are excluded. Enroll and verify fingers locally on each
 laptop before enabling login.
 
+## Optional sudo timeout preference
+
+The proposed 60-minute sudo authentication cache shared across terminals is
+saved under [system/sudo](system/sudo/README.md). It is not applied to the source
+laptop and is not installed by `install.py`; applying this system policy requires
+separate approval and validation.
+
 ## Restore
 
 The installer prints a backup path under
